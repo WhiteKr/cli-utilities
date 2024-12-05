@@ -8,9 +8,21 @@ fn main() {
         return;
     }
 
-    let text = args[1..].join(" ");
+    let command = &args[1];
 
-    if let Err(e) = commands::echo::execute(&text) {
+    let result = match command.as_str() {
+        "echo" => {
+            let text = args[2..].join(" ");
+            commands::echo::execute(&text)
+        }
+        "ls" => {
+            let path = args.get(2).map(|s| s.as_str());
+            commands::ls::execute(path)
+        }
+        _ => Err(format!("Unknown command: {}", command)),
+    };
+
+    if let Err(e) = result {
         eprintln!("Error: {}", e);
         std::process::exit(1);
     }
