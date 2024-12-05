@@ -46,10 +46,27 @@ impl Command {
 
 fn print_help() {
     println!("Available commands:");
-    println!("  cat <file>...     Display contents of files");
-    println!("  echo <text>       Display text");
-    println!("  ls [path]         List directory contents");
-    println!("  help              Show this help message");
+    let commands = [
+        ("cat <file>...", "Display contents of files"),
+        ("echo <text>", "Display text"),
+        ("ls [path]", "List directory contents"),
+        ("help", "Show this help message"),
+    ];
+
+    let max_usage_len = commands
+        .iter()
+        .map(|(usage, _)| usage.len())
+        .max()
+        .unwrap_or(0);
+
+    for (usage, description) in commands {
+        println!(
+            "  {:<width$}    {}",
+            usage,
+            description,
+            width = max_usage_len
+        );
+    }
 }
 
 pub mod cat;
