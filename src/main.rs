@@ -11,6 +11,10 @@ fn main() {
     let command = &args[1];
 
     let result = match command.as_str() {
+        "cat" => {
+            let files = args[2..].to_vec();
+            commands::cat::execute(&files)
+        }
         "echo" => {
             let text = args[2..].join(" ");
             commands::echo::execute(&text)
