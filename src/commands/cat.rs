@@ -1,16 +1,11 @@
 use std::fs;
 
-pub fn execute(files: &[String]) -> Result<(), String> {
-    if files.is_empty() {
-        return Err("No files specified".to_string());
-    }
+use crate::CliResult;
 
+pub fn execute(files: &[String]) -> CliResult<()> {
     for file in files {
-        let content =
-            fs::read_to_string(file).map_err(|e| format!("Failed to read '{}': {}", file, e))?;
-
+        let content = fs::read_to_string(file)?;
         print!("{}", content);
     }
-
     Ok(())
 }

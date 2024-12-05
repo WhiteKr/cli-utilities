@@ -1,35 +1,20 @@
-use cli_utilities::commands;
+use cli_utilities::{CliResult, Command};
 
 fn main() {
-    let args: Vec<String> = std::env::args().collect();
-
-    if args.len() < 2 {
-        println!();
-        return;
-    }
-
-    let command = &args[1];
-
-    let result = match command.as_str() {
-        "cat" => {
-            let files = args[2..].to_vec();
-            commands::cat::execute(&files)
+    let exit_code = match run() {
+        Ok(_) => 0,
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            1
         }
-        "echo" => {
-            let text = args[2..].join(" ");
-            commands::echo::execute(&text)
-        }
-        "ls" => {
-            let path = args.get(2).map(|s| s.as_str());
-            commands::ls::execute(path)
-        }
-        _ => Err(format!("Unknown command: {}", command)),
     };
+    std::process::exit(exit_code);
+}
 
-    if let Err(e) = result {
-        eprintln!("Error: {}", e);
-        std::process::exit(1);
-    }
-
+fn run() -> CliResult<()> {
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let command = Command::from_args(&args)?;
+    command.execute()?;
     println!();
+    Ok(())
 }
